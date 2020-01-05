@@ -1,8 +1,7 @@
 /* global describe, it, beforeEach, afterEach */
 
-const execa = require('execa')
-const kill = require('tree-kill')
 const assert = require('power-assert')
+const Emulator = require('./emulator')
 
 const FirestoreCreator = require('firestore-creator')
 
@@ -10,20 +9,6 @@ describe('FirestoreCreator', () => {
   const host = '127.0.0.1'
   const port = 9876
   let emu
-
-  function invokeEmu () {
-    const hostAndPort = [host, port].join(':')
-    process.env.FIRESTORE_EMULATOR_HOST = hostAndPort
-    return execa('gcloud', ['beta', 'emulators', 'firestore', 'start', '--host-port', hostAndPort])
-  }
-
-  async function killEmu (emu) {
-    return new Promise((resolve, reject) => {
-      kill(emu.pid, (err) => reject(err))
-      delete process.env.FIRESTORE_EMULATOR_HOST
-      resolve(true)
-    })
-  }
 
   describe('.create', () => {
     describe('for development ( env var required )', () => {
@@ -34,7 +19,7 @@ describe('FirestoreCreator', () => {
         store = FirestoreCreator.create({})
       })
       afterEach(() => {
-        delete process.env.FIRESTORE_EMULATOR_HOST
+        process.env.FIRESTORE_EMULATOR_HOST = undefined
       })
 
       it('return Firestore instance', () => {
@@ -60,11 +45,11 @@ describe('FirestoreCreator', () => {
   describe('connect emulator indeed', () => {
     beforeEach(function (done) {
       this.timeout(3000)
-      emu = invokeEmu()
+      emu = Emulator.invoke(host, port)
       setTimeout(done, 2500)
     })
     afterEach(async () => {
-      await killEmu(emu)
+      await emu.kill()
     })
 
     it('empty collections', async () => {
