@@ -19,7 +19,7 @@ describe('FirestoreCreator', function () {
 
       beforeEach(() => {
         process.env.FIRESTORE_EMULATOR_HOST = '127.0.0.1:8080'
-        store = FirestoreCreator.create({ projectId })
+        store = FirestoreCreator.create(projectId)
       })
       afterEach(() => {
         process.env.FIRESTORE_EMULATOR_HOST = undefined
@@ -39,7 +39,7 @@ describe('FirestoreCreator', function () {
     describe('for production', () => {
       it('customHeaders not added', () => {
         assert(
-          Object.keys(FirestoreCreator.create({})._settings).indexOf('Authorization') === -1
+          Object.keys(FirestoreCreator.create()._settings).indexOf('Authorization') === -1
         )
       })
     })
@@ -55,9 +55,7 @@ describe('FirestoreCreator', function () {
     })
 
     it('empty collections', async () => {
-      const store = FirestoreCreator.create({
-        projectId
-      })
+      const store = FirestoreCreator.create(projectId)
       assert.deepEqual(await store.listCollections(), [])
     })
   })
