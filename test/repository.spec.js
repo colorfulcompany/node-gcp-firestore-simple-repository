@@ -19,7 +19,7 @@ describe('Repository', () => {
 
   describe('regular initialized', function () {
     this.timeout(20000)
-    let emu, repo // eslint-disable-line no-unused-vars
+    let emu, repo
 
     beforeEach(async () => {
       emu = Emulator.invoke('127.0.0.1', 9876)
@@ -28,6 +28,56 @@ describe('Repository', () => {
     })
     afterEach(async () => {
       await emu.kill()
+    })
+
+    describe('#add()', () => {
+    })
+
+    describe('#create()', () => {
+    })
+
+    describe('#delete()', () => {
+    })
+
+    describe('#all()', () => {
+      describe('empty', () => {
+        it('[]', async () => {
+          const docs = await repo.all()
+          assert.deepEqual(docs, [])
+        })
+      })
+
+      describe('after added', () => {
+        const resource = { key: 'val' }
+        let docs
+
+        beforeEach(async () => {
+          await repo.add(resource)
+          docs = await repo.all()
+        })
+
+        it('QueryDocumentSnapshot', () => {
+          assert.equal(docs[0].constructor.name, 'QueryDocumentSnapshot')
+        })
+        it('.data() return original', () => {
+          assert.deepEqual(docs[0].data(), resource)
+        })
+        it('.id', () => {
+          assert(typeof docs[0].id === 'string')
+        })
+      })
+    })
+
+    describe('#find()', () => {
+    })
+
+    describe('#first()', () => {
+    })
+
+    describe('#last()', () => {
+    })
+
+    describe('#clear()', () => {
     })
   })
 })

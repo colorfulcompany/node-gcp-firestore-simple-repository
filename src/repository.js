@@ -26,12 +26,25 @@ class Repository {
    * @return {object} - DocumentSnapshot
    */
   async add (data) {
-    const ref = await this.col.add(data)
-    return ref.get()
+    const documentRef = await this.col.add(data)
+    return documentRef.get()
   }
 
   /** @alias add */
   async create (data) { return this.add(data) }
+
+  /**
+   * @return {Array} - {QueryDocumentSnapshot}s
+   */
+  async all () {
+    const refs = await this.col.listDocuments()
+
+    if (refs.length > 0) {
+      return Promise.all(refs.map(async (ref) => ref.get()))
+    } else {
+      return []
+    }
+  }
 }
 
 module.exports = Repository
