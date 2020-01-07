@@ -30,7 +30,7 @@ class Repository {
     return ref.get()
   }
 
-  /** @alias */
+  /** @alias add */
   async create (data) { return this.add(data) }
 }
 
