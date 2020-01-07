@@ -5,9 +5,12 @@ const Emulator = require('./emulator')
 
 const FirestoreCreator = require('firestore-creator')
 
-describe('FirestoreCreator', () => {
+describe('FirestoreCreator', function () {
+  this.timeout(5000)
+
   const host = '127.0.0.1'
   const port = 9876
+  const projectId = 'test'
   let emu
 
   describe('.create', () => {
@@ -16,7 +19,7 @@ describe('FirestoreCreator', () => {
 
       beforeEach(() => {
         process.env.FIRESTORE_EMULATOR_HOST = '127.0.0.1:8080'
-        store = FirestoreCreator.create({})
+        store = FirestoreCreator.create({ projectId })
       })
       afterEach(() => {
         process.env.FIRESTORE_EMULATOR_HOST = undefined
@@ -43,8 +46,7 @@ describe('FirestoreCreator', () => {
   })
 
   describe('connect emulator indeed', () => {
-    beforeEach(function (done) {
-      this.timeout(3000)
+    beforeEach((done) => {
       emu = Emulator.invoke(host, port)
       setTimeout(done, 2500)
     })
@@ -54,8 +56,7 @@ describe('FirestoreCreator', () => {
 
     it('empty collections', async () => {
       const store = FirestoreCreator.create({
-        projectId: 'test',
-        hostAndPort: [host, port].join(':')
+        projectId
       })
       assert.deepEqual(await store.listCollections(), [])
     })
