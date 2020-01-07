@@ -34,6 +34,19 @@ class Repository {
   async create (data) { return this.add(data) }
 
   /**
+   * @param {string} id
+   * @return {object|false} - WriteResult
+   */
+  async delete (id) {
+    const docRef = this.col.doc(id)
+    const docSnapshot = await docRef.get()
+
+    return docSnapshot.exists
+      ? docRef.delete()
+      : false
+  }
+
+  /**
    * @return {Array} - {QueryDocumentSnapshot}s
    */
   async all () {

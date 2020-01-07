@@ -37,6 +37,26 @@ describe('Repository', () => {
     })
 
     describe('#delete()', () => {
+      describe('after added', () => {
+        const resource = { key: 'val' }
+        let id
+
+        beforeEach(async () => {
+          await repo.add(resource)
+          const docs = await repo.all()
+          id = docs[0].id
+        })
+
+        it('return WriteResult', async () => {
+          assert.equal((await repo.delete(id)).constructor.name, 'WriteResult')
+        })
+      })
+
+      describe('not exists', () => {
+        it('return false', async () => {
+          assert.equal(await repo.delete('abc'), false)
+        })
+      })
     })
 
     describe('#all()', () => {
