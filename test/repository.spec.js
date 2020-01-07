@@ -89,6 +89,27 @@ describe('Repository', () => {
     })
 
     describe('#find()', () => {
+      describe('after added', () => {
+        const resource = { key: 'val' }
+        let docSnapshot
+        beforeEach(async () => {
+          const docRef = await repo.add(resource)
+          docSnapshot = await repo.find(docRef.id)
+        })
+
+        it('return QueryDocumentSnapshot', async () => {
+          assert.equal(docSnapshot.constructor.name, 'QueryDocumentSnapshot')
+        })
+        it('.data() for raw data', () => {
+          assert.deepEqual(docSnapshot.data(), resource)
+        })
+      })
+
+      describe('not exists', () => {
+        it('return undefined', async () => {
+          assert.equal(await repo.find('abc'), undefined)
+        })
+      })
     })
 
     describe('#first()', () => {

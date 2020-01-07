@@ -38,11 +38,10 @@ class Repository {
    * @return {object|false} - WriteResult
    */
   async delete (id) {
-    const docRef = this.col.doc(id)
-    const docSnapshot = await docRef.get()
+    const docSnapshot = await this.find(id)
 
-    return docSnapshot.exists
-      ? docRef.delete()
+    return docSnapshot && docSnapshot.exists
+      ? docSnapshot.ref.delete()
       : false
   }
 
@@ -57,6 +56,17 @@ class Repository {
     } else {
       return []
     }
+  }
+
+  /**
+   * @param {string} id
+   * @return {object|undefined} - {QueryDocumentSnapshot}
+   */
+  async find (id) {
+    const docRef = this.col.doc(id)
+    const docSnapshot = await docRef.get()
+
+    return docSnapshot.exists ? docSnapshot : undefined
   }
 }
 
