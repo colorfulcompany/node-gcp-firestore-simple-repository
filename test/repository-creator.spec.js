@@ -1,6 +1,7 @@
 /* global describe, it, beforeEach, afterEach */
 
 const assert = require('power-assert')
+const sleep = require('sleep-promise')
 const Emulator = require('./emulator')
 
 const RepositoryCreator = require('repository-creator')
@@ -14,9 +15,9 @@ describe('RepositoryCreator', () => {
   describe('with emulator', function () {
     this.timeout(20000)
 
-    beforeEach((done) => {
+    beforeEach(async () => {
       emu = Emulator.invoke(host, port)
-      setTimeout(done, 3000)
+      await sleep(2500)
     })
     afterEach(async () => {
       await emu.kill()

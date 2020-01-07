@@ -2,6 +2,7 @@
 
 const assert = require('power-assert')
 const Emulator = require('./emulator')
+const sleep = require('sleep-promise')
 
 const FirestoreCreator = require('firestore-creator')
 
@@ -46,9 +47,9 @@ describe('FirestoreCreator', function () {
   })
 
   describe('connect emulator indeed', () => {
-    beforeEach((done) => {
+    beforeEach(async () => {
       emu = Emulator.invoke(host, port)
-      setTimeout(done, 2500)
+      await sleep(2500)
     })
     afterEach(async () => {
       await emu.kill()
