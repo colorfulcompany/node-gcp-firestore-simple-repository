@@ -31,8 +31,8 @@ describe('Repository', () => {
     })
 
     describe('#name', () => {
-      it('return collection name', async () => {
-        const repo = await RepositoryCreator.create('test-collection', { projectId: 'test-project' })
+      it('return collection name', () => {
+        repo = RepositoryCreator.create('test-collection', { projectId: 'test-project' })
         assert.equal(repo.name, 'test-collection')
       })
     })
