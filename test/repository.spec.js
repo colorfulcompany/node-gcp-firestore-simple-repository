@@ -75,7 +75,7 @@ describe('Repository', () => {
 
         describe('WHOLE composite primary key matches', () => {
           beforeEach(async () => {
-            repo = RepositoryCreator.create('test-collection', { pk: compositeKey })
+            repo = RepositoryCreator.create('test-collection', { projectId: 'test-project', pk: compositeKey })
             await repo.add(resource)
           })
           it('return false', async () => {
@@ -84,7 +84,7 @@ describe('Repository', () => {
         })
         describe('PART of composite primary key matches', () => {
           beforeEach(async () => {
-            repo = RepositoryCreator.create('test-collection', { pk: compositeKey })
+            repo = RepositoryCreator.create('test-collection', { projectId: 'test-project', pk: compositeKey })
             await repo.add(resource)
           })
           it('added successfully', async () => {
