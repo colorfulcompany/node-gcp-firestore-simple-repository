@@ -24,7 +24,7 @@ describe('Repository', () => {
     beforeEach(async () => {
       emu = Emulator.invoke('127.0.0.1', 9876)
       await sleep(2500)
-      repo = RepositoryCreator.create('test-collection', 'test-project')
+      repo = RepositoryCreator.create('test-collection', { projectId: 'test-project' })
     })
     afterEach(async () => {
       await emu.kill()
@@ -32,7 +32,7 @@ describe('Repository', () => {
 
     describe('#name', () => {
       it('return collection name', async () => {
-        const repo = await RepositoryCreator.create('test-collection', 'test-project')
+        const repo = await RepositoryCreator.create('test-collection', { projectId: 'test-project' })
         assert.equal(repo.name, 'test-collection')
       })
     })

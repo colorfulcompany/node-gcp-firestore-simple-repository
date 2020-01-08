@@ -23,11 +23,49 @@ describe('RepositoryCreator', () => {
       await emu.kill()
     })
 
+    describe('args', () => {
+      describe('without args except collection name', () => {
+        beforeEach(() => {
+          RepositoryCreator.create('testC')
+        })
+        it('projectId is undefined', () => {
+          assert.equal(RepositoryCreator._last_projectId, undefined)
+        })
+        it('opts is {}', () => {
+          assert.deepEqual(RepositoryCreator._last_opts, {})
+        })
+      })
+
+      describe('with opts', () => {
+        beforeEach(() => {
+          RepositoryCreator.create('testC', { pk: 'key' })
+        })
+        it('projectId is undefined', () => {
+          assert.equal(RepositoryCreator._last_projectId, undefined)
+        })
+        it('opts is { pk: `key` }', () => {
+          assert.deepEqual(RepositoryCreator._last_opts, { pk: 'key' })
+        })
+      })
+
+      describe('with both projectId and opts', () => {
+        beforeEach(() => {
+          RepositoryCreator.create('testC', { projectId: 'testP', pk: 'key' })
+        })
+        it('projectId is testP', () => {
+          assert.equal(RepositoryCreator._last_projectId, 'testP')
+        })
+        it('opts is { pk: `key` }', () => {
+          assert.deepEqual(RepositoryCreator._last_opts, { pk: 'key' })
+        })
+      })
+    })
+
     describe('given valid object', () => {
       let repo
 
       beforeEach(() => {
-        repo = RepositoryCreator.create('testC', projectId)
+        repo = RepositoryCreator.create('testC', { projectId })
       })
 
       it('return Repository instance', () => {
@@ -57,7 +95,7 @@ describe('RepositoryCreator', () => {
     })
 
     it('#add rejected', async () => {
-      const repo = RepositoryCreator.create('testC', projectId)
+      const repo = RepositoryCreator.create('testC', { projectId })
       assert.rejects(
         async () => repo.add({ key: 'val' })
       )

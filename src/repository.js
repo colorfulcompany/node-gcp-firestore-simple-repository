@@ -6,7 +6,7 @@ class Repository {
   /**
    * @param {object} col - Firestore Collection
    */
-  constructor (col) {
+  constructor (col, opts = {}) {
     if (typeof col === 'object' && col.firestore && col.path) {
       this._collection = col
     } else {
