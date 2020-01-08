@@ -9,6 +9,7 @@ class Repository {
   constructor (col, opts = {}) {
     if (typeof col === 'object' && col.firestore && col.path) {
       this._collection = col
+      this.opts = opts
     } else {
       throw new CollectionInvalid()
     }
@@ -39,9 +40,17 @@ class Repository {
 
   /**
    * @param {object} data
-   * @return {object} - DocumentSnapshot
+   * @return {object|false} - DocumentSnapshot
    */
   async add (data) {
+    if (typeof this.opts.pk !== 'undefined') {
+      const pkVal = data[this.opts.pk]
+      if (typeof pkVal !== 'undefined') {
+        const docs = await this.filter(this.query.where(this.opts.pk, '==', pkVal))
+        if (docs.length > 0) return false
+      }
+    }
+
     const documentRef = await this.col.add(data)
     return documentRef.get()
   }

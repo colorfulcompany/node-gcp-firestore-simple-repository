@@ -50,6 +50,24 @@ describe('Repository', () => {
           assert.equal((await repo.all()).length, 2)
         })
       })
+
+      describe('with single pk option', () => {
+        beforeEach(async () => {
+          repo = RepositoryCreator.create('test-collection', { projectId: 'test-project', pk: 'key' })
+          await repo.add(resource)
+        })
+        describe('same resource given', () => {
+          it('return false', async () => {
+            assert.equal(await repo.add(resource), false)
+          })
+        })
+        describe('different resource given', () => {
+          it('success and length increased', async () => { // depends on order
+            assert(await repo.add({ key: 'val different' }))
+            assert.equal((await repo.all()).length, 2)
+          })
+        })
+      })
     })
 
     describe('#create()', () => {
