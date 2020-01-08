@@ -38,6 +38,18 @@ describe('Repository', () => {
     })
 
     describe('#add()', () => {
+      const resource = { key: 'val' }
+
+      describe('not unique', () => {
+        beforeEach(async () => {
+          await repo.add(resource)
+          await repo.add(resource)
+        })
+
+        it('can be added same resources', async () => {
+          assert.equal((await repo.all()).length, 2)
+        })
+      })
     })
 
     describe('#create()', () => {
