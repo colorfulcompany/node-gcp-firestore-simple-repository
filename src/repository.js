@@ -44,15 +44,29 @@ class Repository {
    */
   async add (data) {
     if (typeof this.opts.pk !== 'undefined') {
-      const pkVal = data[this.opts.pk]
-      if (typeof pkVal !== 'undefined') {
-        const docs = await this.filter(this.query.where(this.opts.pk, '==', pkVal))
-        if (docs.length > 0) return false
-      }
+      const query = this.queryForPksWith(data)
+      const docs = await this.filter(query)
+      if (docs.length > 0) return false
     }
 
     const documentRef = await this.col.add(data)
     return documentRef.get()
+  }
+
+  /**
+   * query object from current data and this.opts.pk
+   *
+   * @param {object} data
+   * @return {object} - Query
+   */
+  queryForPksWith (data) {
+    const pks = (typeof this.opts.pk === 'string') ? [this.opts.pk] : this.opts.pk
+
+    return pks.reduce((query, pk) => {
+      return (typeof data[pk] !== 'undefined')
+        ? query.where(pk, '==', data[pk])
+        : query
+    }, this.query)
   }
 
   /** @alias add */

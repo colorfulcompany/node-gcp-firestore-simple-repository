@@ -68,6 +68,30 @@ describe('Repository', () => {
           })
         })
       })
+
+      describe('with composite key', () => {
+        const resource = { key1: 'val1', key2: 'val2', key3: 'abc' }
+        const compositeKey = ['key1', 'key2']
+
+        describe('WHOLE composite primary key matches', () => {
+          beforeEach(async () => {
+            repo = RepositoryCreator.create('test-collection', { pk: compositeKey })
+            await repo.add(resource)
+          })
+          it('return false', async () => {
+            assert.equal(await repo.add({ key1: 'val1', key2: 'val2', key3: 'def' }), false)
+          })
+        })
+        describe('PART of composite primary key matches', () => {
+          beforeEach(async () => {
+            repo = RepositoryCreator.create('test-collection', { pk: compositeKey })
+            await repo.add(resource)
+          })
+          it('added successfully', async () => {
+            assert(await repo.add({ key1: 'val1', key2: 'val2.2', key3: 'def' }))
+          })
+        })
+      })
     })
 
     describe('#create()', () => {
