@@ -22,6 +22,13 @@ class Repository {
   }
 
   /**
+   * @return {string}
+   */
+  get name () {
+    return this.col.path
+  }
+
+  /**
    * @param {object} data
    * @return {object} - DocumentSnapshot
    */

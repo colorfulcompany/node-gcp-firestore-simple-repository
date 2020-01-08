@@ -30,6 +30,13 @@ describe('Repository', () => {
       await emu.kill()
     })
 
+    describe('#name', () => {
+      it('return collection name', async () => {
+        const repo = await RepositoryCreator.create('test-collection', 'test-project')
+        assert.equal(repo.name, 'test-collection')
+      })
+    })
+
     describe('#add()', () => {
     })
 
