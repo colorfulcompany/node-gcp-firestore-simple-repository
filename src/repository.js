@@ -22,6 +22,15 @@ class Repository {
   }
 
   /**
+   * query interface for collection
+   *
+   * @alias col
+   */
+  get query () {
+    return this.col
+  }
+
+  /**
    * @return {string}
    */
   get name () {
@@ -74,6 +83,14 @@ class Repository {
     const docSnapshot = await docRef.get()
 
     return docSnapshot.exists ? docSnapshot : undefined
+  }
+
+  /**
+   * @param {object} query - {Query}
+   * @return {Array} - of {QueryDocumentSnapshot}
+   */
+  async filter (query) {
+    return (await query.get()).docs
   }
 }
 

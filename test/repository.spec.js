@@ -131,6 +131,32 @@ describe('Repository', () => {
       })
     })
 
+    describe('#filter()', () => {
+      describe('added', () => {
+        const resource = { key: 'val' }
+        const query = ['key', '==', 'val']
+        let docs
+
+        beforeEach(async () => {
+          await repo.add(resource)
+          docs = await repo.filter(repo.query.where(...query))
+        })
+
+        it('length is 1', () => {
+          assert.equal(docs.length, 1)
+        })
+        it('return [{ key: `val` }]', () => {
+          assert.deepEqual(docs.map((doc) => doc.data()), [resource])
+        })
+      })
+
+      describe('not added', () => {
+        it('return []', async () => {
+          assert.deepEqual(await repo.filter(repo.query.where('id', '==', '1')), [])
+        })
+      })
+    })
+
     describe('#first()', () => {
     })
 
