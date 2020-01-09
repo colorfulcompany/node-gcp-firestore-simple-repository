@@ -8,6 +8,8 @@ const RepositoryCreator = require('repository-creator')
 const Repository = require('repository')
 
 describe('Repository', () => {
+  const projectId = 'test-project'
+
   describe('not collection object', () => {
     it('throw CollectionInvalid error', () => {
       assert.throws(
@@ -24,7 +26,7 @@ describe('Repository', () => {
     beforeEach(async () => {
       emu = Emulator.invoke('127.0.0.1', 9876)
       await sleep(2500)
-      repo = RepositoryCreator.create('test-collection', { projectId: 'test-project' })
+      repo = RepositoryCreator.create('test-collection', { projectId })
     })
     afterEach(async () => {
       await emu.kill()
@@ -32,7 +34,7 @@ describe('Repository', () => {
 
     describe('#name', () => {
       it('return collection name', () => {
-        repo = RepositoryCreator.create('test-collection', { projectId: 'test-project' })
+        repo = RepositoryCreator.create('test-collection', { projectId })
         assert.equal(repo.name, 'test-collection')
       })
     })
@@ -53,7 +55,7 @@ describe('Repository', () => {
 
       describe('with single pk option', () => {
         beforeEach(async () => {
-          repo = RepositoryCreator.create('test-collection', { projectId: 'test-project', pk: 'key' })
+          repo = RepositoryCreator.create('test-collection', { projectId, pk: 'key' })
           await repo.add(resource)
         })
         describe('same resource given', () => {
@@ -75,7 +77,7 @@ describe('Repository', () => {
 
         describe('WHOLE composite primary key matches', () => {
           beforeEach(async () => {
-            repo = RepositoryCreator.create('test-collection', { projectId: 'test-project', pk: compositeKey })
+            repo = RepositoryCreator.create('test-collection', { projectId, pk: compositeKey })
             await repo.add(resource)
           })
           it('return false', async () => {
@@ -84,7 +86,7 @@ describe('Repository', () => {
         })
         describe('PART of composite primary key matches', () => {
           beforeEach(async () => {
-            repo = RepositoryCreator.create('test-collection', { projectId: 'test-project', pk: compositeKey })
+            repo = RepositoryCreator.create('test-collection', { projectId, pk: compositeKey })
             await repo.add(resource)
           })
           it('added successfully', async () => {
