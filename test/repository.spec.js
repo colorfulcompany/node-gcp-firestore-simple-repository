@@ -23,13 +23,18 @@ describe('Repository', () => {
     this.timeout(20000)
     let emu, repo
 
-    beforeEach(async () => {
+    before(async () => { // eslint-disable-line no-undef
       emu = Emulator.invoke('127.0.0.1', 9876)
       await sleep(2500)
+    })
+    after(async () => { // eslint-disable-line no-undef
+      await emu.kill()
+    })
+    beforeEach(() => {
       repo = RepositoryCreator.create('test-collection', { projectId })
     })
     afterEach(async () => {
-      await emu.kill()
+      await repo.clear()
     })
 
     describe('#name', () => {

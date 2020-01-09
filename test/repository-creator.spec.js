@@ -15,11 +15,11 @@ describe('RepositoryCreator', () => {
   describe('with emulator', function () {
     this.timeout(20000)
 
-    beforeEach(async () => {
+    before(async () => { // eslint-disable-line no-undef
       emu = Emulator.invoke(host, port)
       await sleep(2500)
     })
-    afterEach(async () => {
+    after(async () => { // eslint-disable-line no-undef
       await emu.kill()
     })
 
@@ -66,6 +66,9 @@ describe('RepositoryCreator', () => {
 
       beforeEach(() => {
         repo = RepositoryCreator.create('testC', { projectId })
+      })
+      afterEach(async () => {
+        await repo.clear()
       })
 
       it('return Repository instance', () => {
