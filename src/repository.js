@@ -54,6 +54,31 @@ class Repository {
   }
 
   /**
+   * @param {string|object} targe
+   * @param {object|false} newData
+   * @param {object} opts
+   */
+  async update (target, newData, opts = {}) {
+    let curr
+
+    if (typeof target === 'string') {
+      curr = await this.find(target)
+    } else {
+      curr = target
+    }
+
+    if (curr) {
+      // normalize to documentReference
+      if (typeof curr.set === 'undefined' && typeof curr.ref !== 'undefined') {
+        curr = curr.ref
+      }
+      return curr.set(newData, opts)
+    } else {
+      return false
+    }
+  }
+
+  /**
    * query object from current data and this.opts.pk
    *
    * @param {object} data

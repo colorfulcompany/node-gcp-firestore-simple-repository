@@ -99,6 +99,38 @@ describe('Repository', () => {
     describe('#create()', () => {
     })
 
+    describe('#update()', () => {
+      const initialResource = { key: 'val' }
+      const updateTo = { key: 'val2' }
+
+      describe('simple update', () => {
+        let origDoc
+        beforeEach(async () => {
+          origDoc = await repo.add(initialResource)
+        })
+        describe('given documentReference', () => {
+          it('return Result and ref modified', async () => {
+            const docRef = origDoc.ref
+            await repo.update(docRef, updateTo)
+            assert.deepEqual((await docRef.get()).data(), updateTo)
+          })
+        })
+        describe('given documentSnapshot', () => {
+          it('need find to get updated doc', async () => {
+            await repo.update(origDoc, updateTo)
+            assert.deepEqual((await repo.find(origDoc.id)).data(), updateTo)
+          })
+        })
+        describe('given doc id', () => {
+          it('need find to get updated doc', async () => {
+            const id = origDoc.id
+            await repo.update(id, updateTo)
+            assert.deepEqual((await repo.find(id)).data(), updateTo)
+          })
+        })
+      })
+    })
+
     describe('#delete()', () => {
       describe('after added', () => {
         const resource = { key: 'val' }
