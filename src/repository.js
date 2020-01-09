@@ -72,7 +72,16 @@ class Repository {
       if (typeof curr.set === 'undefined' && typeof curr.ref !== 'undefined') {
         curr = curr.ref
       }
-      return curr.set(newData, opts)
+
+      if (typeof this.opts.pk !== 'undefined') {
+        const rawCurr = (await curr.get()).data()
+        const rawNext = { ...rawCurr, ...newData }
+        const query = this.queryForPksWith(rawNext)
+        const docs = await this.filter(query)
+        if (docs.length > 0) return false
+      } else {
+        return curr.set(newData, opts)
+      }
     } else {
       return false
     }

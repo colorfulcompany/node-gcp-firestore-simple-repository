@@ -129,6 +129,59 @@ describe('Repository', () => {
           })
         })
       })
+
+      describe('merge update', () => {
+        const set1 = { key: 'val1' }
+        const set2 = { key2: 'val2' }
+        let doc
+
+        beforeEach(async () => {
+          doc = await repo.add(set1)
+        })
+        describe('not merge', () => {
+          it('replace key-val', async () => {
+            await repo.update(doc.ref, set2)
+            assert.deepEqual((await doc.ref.get()).data(), set2)
+          })
+        })
+        describe('merge true', () => {
+          it('', async () => {
+            await repo.update(doc.ref, set2, { merge: true })
+            assert.deepEqual((await doc.ref.get()).data(), { ...set1, ...set2 })
+          })
+        })
+      })
+
+      describe('primary key constraint', () => {
+        const initialResource = { key: 'val' }
+        const updateTo = { key: 'val2' }
+        let doc
+
+        describe('no constraints', () => {
+          beforeEach(async () => {
+            await repo.add(updateTo)
+            doc = await repo.add(initialResource)
+          })
+          it('not unique', async () => {
+            await repo.update(doc, updateTo)
+            const docs = (await repo.all()).map((doc) => {
+              return doc.data()
+            })
+            assert.deepEqual(docs, [updateTo, updateTo])
+          })
+        })
+        describe('with primary key constraint', () => {
+          beforeEach(async () => {
+            repo = RepositoryCreator.create('test-collection', { projectId, pk: 'key' })
+            await repo.add(updateTo)
+            doc = await repo.add(initialResource)
+          })
+          it('update failed', async () => {
+            assert.equal(await repo.update(doc, updateTo), false)
+            assert.deepEqual(doc.data(), initialResource)
+          })
+        })
+      })
     })
 
     describe('#delete()', () => {
