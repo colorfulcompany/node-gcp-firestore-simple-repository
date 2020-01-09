@@ -293,6 +293,22 @@ describe('Repository', () => {
     })
 
     describe('#clear()', () => {
+      describe('2 added', () => {
+        beforeEach(async () => {
+          await repo.add({})
+          await repo.add({})
+        })
+        it('size 2 -> 0', async () => {
+          assert.equal((await repo.all()).length, 2)
+          await repo.clear()
+          assert.equal((await repo.all()).length, 0)
+        })
+      })
+      describe('no added', () => {
+        it('normally complete', async () => {
+          assert(await repo.clear())
+        })
+      })
     })
   })
 })

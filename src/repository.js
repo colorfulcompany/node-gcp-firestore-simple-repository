@@ -149,6 +149,17 @@ class Repository {
   async filter (query) {
     return (await query.get()).docs
   }
+
+  /**
+   * @return {object} - WriteResult
+   */
+  async clear () {
+    const batch = this.col.firestore.batch()
+    const refs = await this.col.listDocuments()
+    refs.forEach((ref) => batch.delete(ref))
+
+    return batch.commit()
+  }
 }
 
 module.exports = Repository
