@@ -199,7 +199,7 @@ describe('Repository', () => {
             docRef2 = (await repo.add(initialResource2)).ref
           })
 
-          describe('partial match with primary key ( key', () => {
+          describe('partial ( key1 only ) match with primary key', () => {
             it('succeed', async () => {
               assert(await repo.update(
                 docRef2, { key1: 'val', key2: 'val' }, { merge: true }))
