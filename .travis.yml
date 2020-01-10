@@ -1,12 +1,27 @@
 dist: bionic
 sudo: true
+cache:
+  directories:
+    # We cache the SDK so we don't have to download it again on subsequent builds.
+    - $HOME/google-cloud-sdk
+env:
+  global:
+    # Do not prompt for user input when using any SDK methods.
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1 
 before_install:
-  - export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
-  - export CLOUDSDK_CORE_DISABLE_PROMPTS=1
-  - echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
-  - curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
-  - sudo apt-get update && sudo apt-get install google-cloud-sdk
-  - gcloud components install cloud-firestore-emulator
+- |
+  if [ ! -d $HOME/google-cloud-sdk/bin ]; then
+    # The install script errors if this directory already exists,
+    # but Travis already creates it when we mark it as cached.
+    rm -rf $HOME/google-cloud-sdk;
+    # The install script is overly verbose, which sometimes causes
+    # problems on Travis, so ignore stdout.
+    curl https://sdk.cloud.google.com | bash > /dev/null;
+  fi
+# This line is critical. We setup the SDK to take precedence in our
+# environment over the old SDK that is already on the machine.
+- source $HOME/google-cloud-sdk/path.bash.increased
+- gcloud components install cloud-firestore-emulator
 language: node_js
 node_js:
   - 8
