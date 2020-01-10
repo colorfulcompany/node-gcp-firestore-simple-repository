@@ -20,7 +20,7 @@ before_install:
   fi
 # This line is critical. We setup the SDK to take precedence in our
 # environment over the old SDK that is already on the machine.
-- source $HOME/google-cloud-sdk/path.bash.increased
+- source $HOME/google-cloud-sdk/path.bash.inc
 - gcloud components install cloud-firestore-emulator
 language: node_js
 node_js:
