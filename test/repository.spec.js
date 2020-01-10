@@ -176,14 +176,42 @@ describe('Repository', () => {
           })
         })
         describe('with primary key constraint', () => {
-          beforeEach(async () => {
-            repo = RepositoryCreator.create('test-collection', { projectId, pk: 'key' })
-            await repo.add(updateTo)
-            doc = await repo.add(initialResource)
+          describe('replace', () => {
+            beforeEach(async () => {
+              repo = RepositoryCreator.create('test-collection', { projectId, pk: 'key' })
+              await repo.add(updateTo)
+              doc = await repo.add(initialResource)
+            })
+            it('update failed', async () => {
+              assert.equal(await repo.update(doc, updateTo), false)
+              assert.deepEqual(doc.data(), initialResource)
+            })
           })
-          it('update failed', async () => {
-            assert.equal(await repo.update(doc, updateTo), false)
-            assert.deepEqual(doc.data(), initialResource)
+        })
+        describe('merge update and constraint', () => {
+          const initialResource1 = { key1: 'val', key2: 'val2', key3: 'val3' }
+          const initialResource2 = { key1: 'val1', key2: 'val2', key3: 'val2' }
+          let docRef2
+
+          beforeEach(async () => {
+            repo = RepositoryCreator.create('test-collection', { projectId, pk: ['key1', 'key2'] })
+            await repo.add(initialResource1)
+            docRef2 = (await repo.add(initialResource2)).ref
+          })
+
+          describe('partial match with primary key ( key', () => {
+            it('succeed', async () => {
+              assert(await repo.update(
+                docRef2, { key1: 'val', key2: 'val' }, { merge: true }))
+            })
+          })
+          describe('whole match with primary key', () => {
+            it('fail', async () => {
+              assert.equal(
+                await repo.update(docRef2, { key1: 'val' }, { merge: true }),
+                false
+              )
+            })
           })
         })
       })

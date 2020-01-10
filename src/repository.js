@@ -57,6 +57,7 @@ class Repository {
    * @param {string|object} targe
    * @param {object|false} newData
    * @param {object} opts
+   * @return {Promise} - WriteResult
    */
   async update (target, newData, opts = {}) {
     let curr
@@ -75,13 +76,12 @@ class Repository {
 
       if (typeof this.opts.pk !== 'undefined') {
         const rawCurr = (await curr.get()).data()
-        const rawNext = { ...rawCurr, ...newData }
+        const rawNext = (opts.merge) ? { ...rawCurr, ...newData } : newData
         const query = this.queryForPksWith(rawNext)
         const docs = await this.filter(query)
         if (docs.length > 0) return false
-      } else {
-        return curr.set(newData, opts)
       }
+      return curr.set(newData, opts)
     } else {
       return false
     }
