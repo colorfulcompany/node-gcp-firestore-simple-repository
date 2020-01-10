@@ -24,5 +24,4 @@ before_install:
 - gcloud components install cloud-firestore-emulator
 language: node_js
 node_js:
-  - 8
   - 10
