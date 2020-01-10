@@ -1,6 +1,6 @@
 /* global describe, it, beforeEach, afterEach */
 
-const Emulator = require('./emulator')
+const EmulatorController = require('emulator-controller')
 const sleep = require('sleep-promise')
 const assert = require('power-assert')
 
@@ -24,7 +24,7 @@ describe('Repository', () => {
     let emu, repo
 
     before(async () => { // eslint-disable-line no-undef
-      emu = Emulator.invoke('127.0.0.1', 9876)
+      emu = EmulatorController.invoke('127.0.0.1', 9876)
       await sleep(2500)
     })
     after(async () => { // eslint-disable-line no-undef

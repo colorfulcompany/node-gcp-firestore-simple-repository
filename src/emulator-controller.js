@@ -1,7 +1,7 @@
 const execa = require('execa')
 const kill = require('tree-kill')
 
-class Emulator {
+class EmulatorController {
   /**
    * @param {string} host
    * @param {string} port
@@ -35,4 +35,4 @@ class Emulator {
   }
 }
 
-module.exports = Emulator
+module.exports = EmulatorController

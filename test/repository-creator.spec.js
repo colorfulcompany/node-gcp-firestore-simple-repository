@@ -2,7 +2,7 @@
 
 const assert = require('power-assert')
 const sleep = require('sleep-promise')
-const Emulator = require('./emulator')
+const EmulatorController = require('emulator-controller')
 
 const RepositoryCreator = require('repository-creator')
 
@@ -16,7 +16,7 @@ describe('RepositoryCreator', () => {
     this.timeout(20000)
 
     before(async () => { // eslint-disable-line no-undef
-      emu = Emulator.invoke(host, port)
+      emu = EmulatorController.invoke(host, port)
       await sleep(2500)
     })
     after(async () => { // eslint-disable-line no-undef
