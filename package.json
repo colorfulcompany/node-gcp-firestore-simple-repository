@@ -1,7 +1,7 @@
 {
   "name": "gcp-firestore-repository",
   "version": "0.1.0",
-  "description": "",
+  "description": "Firestore client creator for both production and emulator env, and Repositor Pattern for Collection",
   "main": "index.js",
   "scripts": {
     "test": "npm-run-all lint spec",
