@@ -125,7 +125,7 @@ class Repository {
     const refs = await this.col.listDocuments()
 
     if (refs.length > 0) {
-      return Promise.all(refs.map(async (ref) => ref.get()))
+      return this.col.firestore.getAll(...refs)
     } else {
       return []
     }
