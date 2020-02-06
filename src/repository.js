@@ -2,6 +2,8 @@ class CollectionInvalid extends Error {
   get name () { return 'CollectionInvalid' }
 }
 
+const TRANSACTION_LIMIT = 500
+
 class Repository {
   /**
    * @param {object} col - Firestore Collection
@@ -151,14 +153,27 @@ class Repository {
   }
 
   /**
+   * @return {number}
+   */
+  async size () {
+    return (await this.col.get()).size
+  }
+
+  /**
    * @return {object} - WriteResult
    */
   async clear () {
-    const batch = this.col.firestore.batch()
-    const refs = await this.col.listDocuments()
-    refs.forEach((ref) => batch.delete(ref))
+    const col = this.col
+    const results = []
 
-    return batch.commit()
+    while (await this.size() > 0) {
+      const batch = col.firestore.batch()
+      const snaps = await col.limit(TRANSACTION_LIMIT).get()
+      snaps.forEach((snap) => batch.delete(snap.ref))
+      results.push(batch.commit())
+    }
+
+    return results
   }
 }
 

@@ -54,7 +54,7 @@ describe('Repository', () => {
         })
 
         it('can be added same resources', async () => {
-          assert.equal((await repo.all()).length, 2)
+          assert.equal(await repo.size(), 2)
         })
       })
 
@@ -71,7 +71,7 @@ describe('Repository', () => {
         describe('different resource given', () => {
           it('success and length increased', async () => { // depends on order
             assert(await repo.add({ key: 'val different' }))
-            assert.equal((await repo.all()).length, 2)
+            assert.equal(await repo.size(), 2)
           })
         })
       })
@@ -332,14 +332,28 @@ describe('Repository', () => {
           await repo.add({})
         })
         it('size 2 -> 0', async () => {
-          assert.equal((await repo.all()).length, 2)
+          assert.equal(await repo.size(), 2)
           await repo.clear()
-          assert.equal((await repo.all()).length, 0)
+          assert.equal(await repo.size(), 0)
         })
       })
       describe('no added', () => {
         it('normally complete', async () => {
           assert(await repo.clear())
+        })
+      })
+
+      describe('over 500 documents', function () {
+        this.timeout(50000)
+
+        beforeEach(async () => {
+          for (let i = 0; i <= 500; i++) {
+            await repo.add({ i: i })
+          }
+        })
+        it('clear successfully', async () => {
+          assert(await repo.clear())
+          assert.equal(await repo.size(), 0)
         })
       })
     })
