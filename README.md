@@ -23,13 +23,13 @@
 
 const sleep = require('sleep-promise')
 
-const { FirestoreCreator } = require('gcp-firestore-repository)
+const { FirestoreCreator } = require('gcp-firestore-simple-repository)
 const store = FirestoreCreator.create(<projectId>)
 
-const { RepositoryCreator } = require('gcp-firestore-repository)
+const { RepositoryCreator } = require('gcp-firestore-simple-repository)
 const repository = RepositoryCreator.create(<collection>, { projectId: <projectId> })
 
-const { EmulatorController } = require('gcp-firestore-repository')
+const { EmulatorController } = require('gcp-firestore-simple-repository')
 
 ;(async () => {
   // same as `$ gcloud beta emulators firestore start`
