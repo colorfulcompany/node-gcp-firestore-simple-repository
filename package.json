@@ -1,6 +1,6 @@
 {
-  "name": "gcp-simple-firestore-repository",
-  "version": "0.1.2",
+  "name": "gcp-firestore-simple-repository",
+  "version": "0.1.3",
   "description": "Firestore client creator for both production and emulator env, and Repositor Pattern for Single Collection",
   "main": "index.js",
   "scripts": {
