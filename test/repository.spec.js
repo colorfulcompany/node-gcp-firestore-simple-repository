@@ -228,8 +228,8 @@ describe('Repository', () => {
           id = docs[0].id
         })
 
-        it('return WriteResult', async () => {
-          assert.equal((await repo.delete(id)).constructor.name, 'WriteResult')
+        it('return Transaction', async () => {
+          assert.equal((await repo.delete(id)).constructor.name, 'Transaction')
         })
       })
 

@@ -62,6 +62,7 @@ class Repository {
    * @return {Promise} - WriteResult
    */
   async update (target, newData, opts = {}) {
+    const db = this.col._firestore
     let curr
 
     if (typeof target === 'string') {
@@ -83,7 +84,9 @@ class Repository {
         const docs = await this.filter(query)
         if (docs.length > 0) return false
       }
-      return curr.set(newData, opts)
+      return db.runTransaction(async (t) => {
+        return t.set(curr, newData, opts)
+      })
     } else {
       return false
     }
@@ -113,24 +116,30 @@ class Repository {
    * @return {object|false} - WriteResult
    */
   async delete (id) {
-    const docSnapshot = await this.find(id)
+    const db = this.col._firestore
 
-    return docSnapshot && docSnapshot.exists
-      ? docSnapshot.ref.delete()
-      : false
+    return db.runTransaction(async (t) => {
+      const docSnapshot = await this.find(id)
+      return docSnapshot && docSnapshot.exists
+        ? t.delete(docSnapshot.ref)
+        : false
+    })
   }
 
   /**
    * @return {Array} - {QueryDocumentSnapshot}s
    */
   async all () {
+    const db = this.col._firestore
     const refs = await this.col.listDocuments()
 
-    if (refs.length > 0) {
-      return this.col.firestore.getAll(...refs)
-    } else {
-      return []
-    }
+    return db.runTransaction(async (t) => {
+      if (refs.length > 0) {
+        return t.getAll(...refs)
+      } else {
+        return []
+      }
+    })
   }
 
   /**
@@ -138,10 +147,14 @@ class Repository {
    * @return {object|undefined} - {QueryDocumentSnapshot}
    */
   async find (id) {
-    const docRef = this.col.doc(id)
-    const docSnapshot = await docRef.get()
+    const db = this.col._firestore
 
-    return docSnapshot.exists ? docSnapshot : undefined
+    return db.runTransaction(async (t) => {
+      const docRef = this.col.doc(id)
+      const docSnapshot = await t.get(docRef)
+
+      return docSnapshot.exists ? docSnapshot : undefined
+    })
   }
 
   /**
@@ -149,7 +162,11 @@ class Repository {
    * @return {Array} - of {QueryDocumentSnapshot}
    */
   async filter (query) {
-    return (await query.get()).docs
+    const db = this.col._firestore
+
+    return db.runTransaction(async (t) => {
+      return (await t.get(query)).docs
+    })
   }
 
   /**
