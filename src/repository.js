@@ -41,7 +41,7 @@ class Repository {
   }
 
   /**
-   * @param {Function} callback
+   * @param {Function} callback - with async
    */
   transaction (callback) {
     const db = this.col._firestore
