@@ -1,6 +1,6 @@
 {
   "name": "gcp-firestore-simple-repository",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Firestore client creator for both production and emulator env, and Repositor Pattern for Single Collection",
   "main": "index.js",
   "scripts": {
@@ -33,6 +33,8 @@
     "tree-kill": "^1.2.2"
   },
   "dependencies": {
-    "@google-cloud/firestore": "^3.3.0"
+    "@google-cloud/firestore": "^3.3.0",
+    "array.prototype.flat": "^1.2.3",
+    "lodash.chunk": "^4.2.0"
   }
 }

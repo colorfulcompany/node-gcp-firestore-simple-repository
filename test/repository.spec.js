@@ -358,16 +358,25 @@ describe('Repository', () => {
       })
 
       describe('over 500 documents', function () {
-        this.timeout(50000)
-
         beforeEach(async () => {
-          for (let i = 0; i <= 500; i++) {
-            await repo.add({ i: i })
-          }
+          const data = []
+          for (let i = 0; i <= 500; i++) data.push({ id: i + '' })
+          await repo.bulkLoad(data, 'id')
         })
         it('clear successfully', async () => {
+          assert.equal(await repo.size(), 501)
           assert(await repo.clear())
           assert.equal(await repo.size(), 0)
+        })
+      })
+    })
+
+    describe('#bulkLoad()', () => {
+      describe('same data', () => {
+        it('rejected', () => {
+          assert.rejects(
+            async () => repo.bulkLoad([{ id: '1' }, { id: '1' }], 'id')
+          )
         })
       })
     })

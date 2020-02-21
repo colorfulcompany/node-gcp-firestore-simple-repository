@@ -1,3 +1,6 @@
+require('array.prototype.flat/auto')
+const arrayChunks = require('lodash.chunk')
+
 class CollectionInvalid extends Error {
   get name () { return 'CollectionInvalid' }
 }
@@ -198,14 +201,34 @@ class Repository {
     const col = this.col
     const results = []
 
-    while (await this.size() > 0) {
-      const batch = col.firestore.batch()
-      const snaps = await col.limit(TRANSACTION_LIMIT).get()
-      snaps.forEach((snap) => batch.delete(snap.ref))
-      results.push(batch.commit())
-    }
+    const refs = await col.listDocuments()
+    await Promise.all(
+      arrayChunks(refs, this.TRANSACTION_LIMIT).map(async (chunk) => {
+        const batch = this.batch()
+        chunk.map((ref) => batch.delete(ref))
+        results.push(await batch.commit())
+      }))
 
-    return results
+    return results.flat()
+  }
+
+  /**
+   * @param {Array} data
+   * @param {string} idColumn
+   * @return {Array|boolean}
+   */
+  async bulkLoad (data, idColumn) {
+    const results = []
+    await Promise.all(
+      arrayChunks(data, this.TRANSACTION_LIMIT).map(async (chunk) => {
+        const batch = this.batch()
+        chunk.map((datum) => {
+          const docRef = this.col.doc(datum[idColumn])
+          batch.create(docRef, datum)
+        })
+        results.push(await batch.commit())
+      }))
+    return (results.length) > 0 ? results.flat() : false
   }
 }
 
