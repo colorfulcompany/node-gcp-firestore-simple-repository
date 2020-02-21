@@ -37,6 +37,20 @@ describe('Repository', () => {
       await repo.clear()
     })
 
+    describe('#TRANSACTION_LIMIT', () => {
+      it('500', () => {
+        repo = RepositoryCreator.create('test-collection', { projectId })
+        assert.equal(repo.TRANSACTION_LIMIT, 500)
+      })
+    })
+
+    describe('#batch()', () => {
+      it('', () => {
+        repo = RepositoryCreator.create('test-collection', { projectId })
+        assert.equal(repo.batch().constructor.name, 'WriteBatch')
+      })
+    })
+
     describe('#name', () => {
       it('return collection name', () => {
         repo = RepositoryCreator.create('test-collection', { projectId })

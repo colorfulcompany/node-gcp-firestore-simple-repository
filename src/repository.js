@@ -18,6 +18,13 @@ class Repository {
   }
 
   /**
+   * @return {number}
+   */
+  get TRANSACTION_LIMIT () {
+    return TRANSACTION_LIMIT
+  }
+
+  /**
    * @return {object}
    */
   get col () {
@@ -38,6 +45,13 @@ class Repository {
    */
   get name () {
     return this.col.path
+  }
+
+  /**
+   * @return {object}
+   */
+  batch () {
+    return this.col._firestore.batch()
   }
 
   /**
