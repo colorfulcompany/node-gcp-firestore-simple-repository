@@ -41,6 +41,15 @@ class Repository {
   }
 
   /**
+   * @param {Function} callback
+   */
+  transaction (callback) {
+    const db = this.col._firestore
+
+    return db.runTransaction(async (t) => callback(t))
+  }
+
+  /**
    * @param {object} data
    * @return {object|false} - DocumentSnapshot
    */
@@ -62,7 +71,6 @@ class Repository {
    * @return {Promise} - WriteResult
    */
   async update (target, newData, opts = {}) {
-    const db = this.col._firestore
     let curr
 
     if (typeof target === 'string') {
@@ -84,7 +92,7 @@ class Repository {
         const docs = await this.filter(query)
         if (docs.length > 0) return false
       }
-      return db.runTransaction(async (t) => {
+      return this.transaction(async (t) => {
         return t.set(curr, newData, opts)
       })
     } else {
@@ -116,9 +124,7 @@ class Repository {
    * @return {object|false} - WriteResult
    */
   async delete (id) {
-    const db = this.col._firestore
-
-    return db.runTransaction(async (t) => {
+    return this.transaction(async (t) => {
       const docSnapshot = await this.find(id)
       return docSnapshot && docSnapshot.exists
         ? t.delete(docSnapshot.ref)
@@ -130,10 +136,9 @@ class Repository {
    * @return {Array} - {QueryDocumentSnapshot}s
    */
   async all () {
-    const db = this.col._firestore
     const refs = await this.col.listDocuments()
 
-    return db.runTransaction(async (t) => {
+    return this.transaction(async (t) => {
       if (refs.length > 0) {
         return t.getAll(...refs)
       } else {
@@ -147,9 +152,7 @@ class Repository {
    * @return {object|undefined} - {QueryDocumentSnapshot}
    */
   async find (id) {
-    const db = this.col._firestore
-
-    return db.runTransaction(async (t) => {
+    return this.transaction(async (t) => {
       const docRef = this.col.doc(id)
       const docSnapshot = await t.get(docRef)
 
@@ -162,9 +165,7 @@ class Repository {
    * @return {Array} - of {QueryDocumentSnapshot}
    */
   async filter (query) {
-    const db = this.col._firestore
-
-    return db.runTransaction(async (t) => {
+    return this.transaction(async (t) => {
       return (await t.get(query)).docs
     })
   }
