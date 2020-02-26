@@ -2,10 +2,13 @@
 
 const EmulatorController = require('emulator-controller')
 const sleep = require('sleep-promise')
+const sinon = require('sinon')
 const assert = require('power-assert')
 
 const RepositoryCreator = require('repository-creator')
 const Repository = require('repository')
+
+const { GoogleAuth, auth } = require('google-auth-library') // eslint-disable-line no-unused-vars
 
 describe('Repository', () => {
   const projectId = 'test-project'
@@ -16,6 +19,25 @@ describe('Repository', () => {
         () => new Repository({}),
         { name: 'CollectionInvalid' }
       )
+    })
+  })
+
+  describe('Could not load the default credentials.', () => {
+    beforeEach(() => {
+      sinon.stub(auth, 'getApplicationDefaultAsync').throws('Could not load the default credentials.')
+    })
+    afterEach(() => sinon.restore())
+
+    it('rejected', async () => {
+      try {
+        const repo = RepositoryCreator.create('test-collection', { projectId })
+        await repo.all()
+      } catch (e) {
+        console.log('---\n')
+        console.log(e.message)
+        console.log('---\n')
+        console.log(e)
+      }
     })
   })
 
