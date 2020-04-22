@@ -1,5 +1,6 @@
 require('array.prototype.flat/auto')
 const arrayChunks = require('lodash.chunk')
+const sleep = require('sleep-promise')
 
 class CollectionInvalid extends Error {
   get name () { return 'CollectionInvalid' }
@@ -227,6 +228,7 @@ class Repository {
           batch.create(docRef, datum)
         })
         results.push(await batch.commit())
+        await sleep(1000)
       }))
     return (results.length) > 0 ? results.flat() : false
   }
