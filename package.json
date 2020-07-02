@@ -35,6 +35,7 @@
   "dependencies": {
     "@google-cloud/firestore": "^3.3.0",
     "array.prototype.flat": "^1.2.3",
-    "lodash.chunk": "^4.2.0"
+    "lodash.chunk": "^4.2.0",
+    "minimist": "1.2.5"
   }
 }
