@@ -28,7 +28,11 @@ class EmulatorController {
    */
   async kill () {
     return new Promise((resolve, reject) => {
-      kill(this.proc.pid, (err) => reject(err))
+      kill(this.proc.pid, (err) => {
+        if (err !== undefined) {
+          console.error(err)
+        }
+      })
       process.env.FIRESTORE_EMULATOR_HOST = undefined
       resolve(true)
     })
